@@ -127,7 +127,9 @@ colors=['blue','red','green','violet','orange','teal','navy','magenta','lime','m
 
 
 
-data = np.random.randint(0, range_of_value, size=(num_of_points, dimension))
+#data = np.random.randint(0, range_of_value, size=(num_of_points, dimension))
+
+data=np.random.uniform(0, range_of_value, size=(num_of_points, dimension))
 
 print("\n Data was successfully generated and saved.")
 
@@ -138,7 +140,7 @@ while 1:
     dimension=int(input('\n What is the dimension (2 and 3 recommended for visualization)'))
     num_of_points=int(input('\n How many points to generate '))
     range_of_value=int(input('\n Points Values in each Dimension vary in [0,x] what is x '))
-    data=  np.random.randint(0, range_of_value, size=(num_of_points, dimension))
+    data=  np.random.uniform(0, range_of_value, size=(num_of_points, dimension))
 
   choice=int(input("\n What algorithm do you want to use? 1: K-means  2: HAC "))
 
@@ -151,7 +153,8 @@ while 1:
     check=0
     counter=0
     while check==0:       #continue generating random centroids until there is no centroid without a point in its cluster
-      centroids = (np.random.normal(size=(num_of_clusters, dimension)) ) + np.mean(data, axis=0).reshape((1, dimension))
+#     centroids = np.random.randint(0,range_of_value, size=(num_of_clusters, dimension)) 
+      centroids = (np.random.normal(size=(num_of_clusters, dimension))*(range_of_value/2) ) + np.mean(data, axis=0).reshape((1, dimension))
       firsassignment = re_assign(data, centroids)
       #print(firsassignment)
       if (array_cover(firsassignment,num_of_clusters))==1: check=1
@@ -159,11 +162,17 @@ while 1:
       if(counter==1000): 
         print(" !!! You chose too many clusters for your Data. Try again !!!")
         break
+
     if(counter!=1000): 
-      for i in range(100):    #do 100 iterations
+      dummy=[-1]*num_of_points
+      iter=0
+      while 1:    #keep iterating until convergence criterion is satisfied
+        iter=iter+1
         a = re_assign(data, centroids)
         centroids = centroids_find_mean(data, centroids, a)
         centroids = np.array(centroids)
+        if a==dummy: break
+        dummy=a
 
       if dimension==2:
           for j in range (num_of_clusters):
@@ -174,7 +183,7 @@ while 1:
             plt.scatter(temp[:, 0], temp[:, 1],c=colors[j])
           plt.scatter(centroids[:, 0], centroids[:, 1],c='yellow',edgecolors='black')
           end = time.time()
-          plt.title('K-means Algo / Run Time '+str(end-start))
+          plt.title('K-means Algo / Run Time '+str(end-start)+" / iterations: "+str(iter))
           plt.show()       
         
       elif dimension==3:
@@ -187,7 +196,7 @@ while 1:
             plt.scatter(temp[:, 0], temp[:, 1],temp[:, 2],c=colors[j])
           
           end = time.time()
-          plt.title('K-means Algo / Run Time '+str(end-start))
+          plt.title('K-means Algo / Run Time '+str(end-start)+" / iterations: "+str(iter))
           plt.show()
 
           fig = plt.figure()
@@ -200,7 +209,7 @@ while 1:
             temp=np.array(temp)
             ax.scatter(temp[:, 0], temp[:, 1],temp[:, 2],c=colors[j])
           ax.scatter(centroids[:,0], centroids[:,1], centroids[:,2],c='yellow',edgecolors='black')
-          plt.title('K-means Algo / Run Time '+str(end-start))
+          plt.title('K-means Algo / Run Time '+str(end-start)+" / iterations: "+str(iter))
           plt.show()
       
       elif dimension>=4:
@@ -211,7 +220,7 @@ while 1:
             temp=np.array(temp)
             print('\n Cluster ', j+1,' contains: \n', temp)
           end = time.time()
-          print('\n K-means Algo / Run Time '+str(end-start))     
+          print('\n K-means Algo / Run Time '+str(end-start)+" / iterations: "+str(iter))     
       
     
 
@@ -298,7 +307,7 @@ while 1:
         for j in range (len(points[i])):
           temp.append(data[points[i][j]])
         temp=np.array(temp)
-        print("\n Cluster ", i+1, " contains: ", temp)
+        print("\n Cluster ", i+1, " contains: \n", temp)
       
       end = time.time()
       print('\n HAC Algo '+typestr+'/ Run Time '+str(end-start))
