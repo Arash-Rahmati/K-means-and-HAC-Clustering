@@ -123,7 +123,7 @@ range_of_value=int(input('\n Points Values in each Dimension vary in [0,x] what 
 
 
 
-colors=['blue','red','green','violet','orange','teal','navy','magenta','lime','maroon'] +['black']*40
+colors=['blue','red','green','violet','orange','teal','navy','magenta','lime','maroon'] +['black']*90
 
 
 
@@ -154,7 +154,16 @@ while 1:
     counter=0
     while check==0:       #continue generating random centroids until there is no centroid without a point in its cluster
 #     centroids = np.random.randint(0,range_of_value, size=(num_of_clusters, dimension)) 
-      centroids = (np.random.normal(size=(num_of_clusters, dimension))*(range_of_value/2) ) + np.mean(data, axis=0).reshape((1, dimension))
+#      centroids = (np.random.normal(size=(num_of_clusters, dimension))*(range_of_value/2) ) + np.mean(data, axis=0).reshape((1, dimension)) (latest)
+        #try new
+      centroids=[]
+      temp_arr=list(range(0, num_of_points))
+      for i in range (0,num_of_clusters):
+        chosen=np.random.randint(0,len(temp_arr))
+        centroids.append(data[temp_arr[chosen]])
+        del temp_arr[chosen]
+        #try new
+
       firsassignment = re_assign(data, centroids)
       #print(firsassignment)
       if (array_cover(firsassignment,num_of_clusters))==1: check=1
