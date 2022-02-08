@@ -17,7 +17,7 @@ def array_cover(list,num):  #K-means   #check if all random centroids cover at l
   return 1
 
 
-def re_assign(data, centroids): #K-means  #take the previous assignment of points to centroids and reassigning them to the new centroids
+def re_assign(data, centroids): #K-means  #take the previous assignment of points to reassign them to the new centroids
     c = []
     for i in data:
         min=1500000
@@ -36,7 +36,7 @@ def centroids_find_mean(data, num_clusters, assignments): #K-means   #finds the 
         cen.append(np.mean([data[x] for x in range(len(data)) if assignments[x] == c], axis=0))
     return cen
 
-def min_lower(matrix):           #finds the min element in the lower triangle of the distance matrix and returns the position of it
+def min_lower(matrix):           #HAC #finds the min element in the lower triangle of the distance matrix and returns the position of it
   le=len(matrix)
   min=1500000
   position=[]
@@ -48,14 +48,14 @@ def min_lower(matrix):           #finds the min element in the lower triangle of
   return position
  
 def shrink_matrix_single_link(matrix):              #take a n by n matrix and shrink it by 1 to get (n-1) by (n-1)
-                                        #each shrinking step means two clusters are merging
+                                        #each shrinking step means two clusters are merging   #single-link
   le=len(matrix)
   index_to_remove=min_lower(matrix)[0]
   index_to_update=min_lower(matrix)[1]
   matrix2=np.delete(matrix, index_to_remove, 0)
   matrix2=np.delete(matrix2, index_to_remove, 1)
   
-  #update the required entries of the distance matrix using (single-link or complete-link or average-link)
+  #update the required entries of the distance matrix using (single-link method)
   for i in range(0,index_to_update):
     matrix2[index_to_update][i]=min(matrix[index_to_update][i],matrix[index_to_remove][i])      #single-link  
   for i in range(index_to_update+1,index_to_remove):
@@ -69,14 +69,14 @@ def shrink_matrix_single_link(matrix):              #take a n by n matrix and sh
   return matrix2     #finally return the smaller n-1 by n-1 matrix to be given to the same function again
 
 def shrink_matrix_complete_link(matrix):              #take a n by n matrix and shrink it by 1 to get (n-1) by (n-1)
-                                        #each shrinking step means two clusters are merging
+                                        #each shrinking step means two clusters are merging   #complete link
   le=len(matrix)
   index_to_remove=min_lower(matrix)[0]
   index_to_update=min_lower(matrix)[1]
   matrix2=np.delete(matrix, index_to_remove, 0)
   matrix2=np.delete(matrix2, index_to_remove, 1)
   
-  #update the required entries of the distance matrix using (single-link or complete-link or average-link)
+  #update the required entries of the distance matrix using (complete-link)
   for i in range(0,index_to_update):
     matrix2[index_to_update][i]=max(matrix[index_to_update][i],matrix[index_to_remove][i])      #complete-link  
   for i in range(index_to_update+1,index_to_remove):
@@ -91,14 +91,14 @@ def shrink_matrix_complete_link(matrix):              #take a n by n matrix and 
   return matrix2     #finally return the smaller n-1 by n-1 matrix to be given to the same function again
 
 def shrink_matrix_average_link(matrix):              #take a n by n matrix and shrink it by 1 to get (n-1) by (n-1)
-                                        #each shrinking step means two clusters are merging
+                                        #each shrinking step means two clusters are merging  #average-link
   le=len(matrix)
   index_to_remove=min_lower(matrix)[0]
   index_to_update=min_lower(matrix)[1]
   matrix2=np.delete(matrix, index_to_remove, 0)
   matrix2=np.delete(matrix2, index_to_remove, 1)
   
-  #update the required entries of the distance matrix using (single-link or complete-link or average-link)
+  #update the required entries of the distance matrix using (average-link)
   for i in range(0,index_to_update):
     matrix2[index_to_update][i]=(matrix[index_to_update][i]+matrix[index_to_remove][i])/2        #average-link  
   for i in range(index_to_update+1,index_to_remove):
@@ -117,19 +117,10 @@ num_of_points=int(input('\n How many points to generate '))
 range_of_value=int(input('\n Points Values in each Dimension vary in [0,x] what is x '))
 
 
-
-
-
-
-
-
 colors=['blue','red','green','violet','orange','teal','navy','magenta','lime','maroon'] +['black']*90
 
-
-
 #data = np.random.randint(0, range_of_value, size=(num_of_points, dimension))
-
-data=np.random.uniform(0, range_of_value, size=(num_of_points, dimension))
+data=np.random.uniform(0, range_of_value, size=(num_of_points, dimension))     
 
 print("\n Data was successfully generated and saved.")
 
@@ -168,6 +159,7 @@ while 1:
       #print(firsassignment)
       if (array_cover(firsassignment,num_of_clusters))==1: check=1
       counter=counter+1
+      
       if(counter==1000): 
         print(" !!! You chose too many clusters for your Data. Try again !!!")
         break
